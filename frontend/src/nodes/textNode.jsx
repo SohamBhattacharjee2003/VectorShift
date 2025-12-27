@@ -5,7 +5,7 @@ import { parseVariables } from '../utils/parseVariables';
 export const TextNode = ({ id, data }) => {
   const [currText, setCurrText] = useState(data?.text || '{{input}}');
   const [variables, setVariables] = useState([]);
-  const [dimensions, setDimensions] = useState({ width: 250, height: 'auto' });
+  const [dimensions, setDimensions] = useState({ width: 180, height: 'auto' });
   const textareaRef = useRef(null);
 
   // Parse variables whenever text changes
@@ -24,9 +24,9 @@ export const TextNode = ({ id, data }) => {
       
       // Calculate width based on content (with max and min constraints)
       const scrollWidth = textareaRef.current.scrollWidth;
-      const minWidth = 250;
-      const maxWidth = 500;
-      const calculatedWidth = Math.min(maxWidth, Math.max(minWidth, scrollWidth + 40));
+      const minWidth = 180;
+      const maxWidth = 400;
+      const calculatedWidth = Math.min(maxWidth, Math.max(minWidth, scrollWidth + 30));
       
       setDimensions({
         width: calculatedWidth,
@@ -47,6 +47,7 @@ export const TextNode = ({ id, data }) => {
 
   return (
     <BaseNode
+      id={id}
       title="Text"
       icon="📝"
       inputs={dynamicInputs}
@@ -58,10 +59,10 @@ export const TextNode = ({ id, data }) => {
       <div style={{ width: '100%' }}>
         <label style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ 
-            fontSize: '0.5rem', 
+            fontSize: '0.4rem', 
             fontWeight: '600', 
             color: '#6b7280', 
-            marginBottom: '0.15rem' 
+            marginBottom: '0.1rem' 
           }}>
             Text Content
           </span>
@@ -70,13 +71,13 @@ export const TextNode = ({ id, data }) => {
             style={{
               width: '100%',
               border: '1px solid #d1d5db',
-              borderRadius: '0.25rem',
-              padding: '0.25rem 0.375rem',
-              fontSize: '0.5rem',
+              borderRadius: '0.2rem',
+              padding: '0.2rem 0.3rem',
+              fontSize: '0.4rem',
               outline: 'none',
               resize: 'none',
               overflow: 'hidden',
-              minHeight: '30px',
+              minHeight: '24px',
               transition: 'all 0.2s',
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
               color: '#e2e8f0'
@@ -90,9 +91,9 @@ export const TextNode = ({ id, data }) => {
         
         {variables.length > 0 && (
           <div style={{ 
-            fontSize: '0.4375rem', 
+            fontSize: '0.375rem', 
             color: '#94a3b8', 
-            marginTop: '0.25rem' 
+            marginTop: '0.2rem' 
           }}>
             <span style={{ fontWeight: '600' }}>Variables:</span>{' '}
             {variables.map((v) => (
@@ -103,11 +104,11 @@ export const TextNode = ({ id, data }) => {
                   alignItems: 'center',
                   backgroundColor: 'rgba(251, 191, 36, 0.2)',
                   color: '#fbbf24',
-                  padding: '0.05rem 0.15rem',
-                  borderRadius: '0.15rem',
-                  marginRight: '0.15rem',
+                  padding: '0.05rem 0.1rem',
+                  borderRadius: '0.1rem',
+                  marginRight: '0.1rem',
                   border: '1px solid rgba(251, 191, 36, 0.3)',
-                  fontSize: '0.4375rem'
+                  fontSize: '0.375rem'
                 }}
               >
                 {v}

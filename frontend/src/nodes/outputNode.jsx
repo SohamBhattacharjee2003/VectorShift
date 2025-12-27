@@ -9,16 +9,18 @@ export const OutputNode = ({ id, data }) => {
 
   return (
     <BaseNode
+      id={id}
       title="Output"
       icon="📤"
       inputs={[`${id}-value`]}
+      outputs={[{ id: `${id}-output`, label: 'output' }]}
       headerColor="from-red-500 to-pink-600"
     >
-      <div className="space-y-3">
+      <div className="space-y-4">
         <label className="flex flex-col">
-          <span className="text-xs font-medium text-gray-600 mb-1">Name</span>
+          <span className="text-sm font-semibold text-gray-700 mb-3">Name</span>
           <input
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+            className="node-input focus-ring-red"
             type="text"
             value={currName}
             onChange={(e) => setCurrName(e.target.value)}
@@ -27,9 +29,9 @@ export const OutputNode = ({ id, data }) => {
         </label>
 
         <label className="flex flex-col">
-          <span className="text-xs font-medium text-gray-600 mb-1">Type</span>
+          <span className="text-sm font-semibold text-gray-700 mb-3">Type</span>
           <select
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all bg-white"
+            className="node-select focus-ring-red cursor-pointer"
             value={outputType}
             onChange={(e) => setOutputType(e.target.value)}
           >

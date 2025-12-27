@@ -10,6 +10,7 @@ export const DelayNode = ({ id, data }) => {
 
   return (
     <BaseNode
+      id={id}
       title="Delay"
       icon="⏱️"
       inputs={[{ id: `${id}-input`, label: 'input' }]}
@@ -22,7 +23,7 @@ export const DelayNode = ({ id, data }) => {
             Delay (ms)
           </span>
           <input
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+            className="node-input focus-ring-amber"
             type="number"
             min="0"
             step="100"

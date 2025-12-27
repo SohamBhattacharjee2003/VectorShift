@@ -11,6 +11,7 @@ export const MergeNode = ({ id, data }) => {
 
   return (
     <BaseNode
+      id={id}
       title="Merge"
       icon="🔗"
       inputs={[
@@ -25,7 +26,7 @@ export const MergeNode = ({ id, data }) => {
         <label className="flex flex-col">
           <span className="text-xs font-medium text-gray-600 mb-1">Strategy</span>
           <select
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all bg-white"
+            className="node-select focus-ring-violet"
             value={mergeStrategy}
             onChange={(e) => setMergeStrategy(e.target.value)}
           >
@@ -39,7 +40,7 @@ export const MergeNode = ({ id, data }) => {
           <label className="flex flex-col">
             <span className="text-xs font-medium text-gray-600 mb-1">Separator</span>
             <input
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+              className="node-input focus-ring-violet"
               type="text"
               value={separator}
               onChange={(e) => setSeparator(e.target.value)}

@@ -149,11 +149,11 @@ export const PipelineUI = () => {
                 />
                 <Controls 
                     style={{
-                        button: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                            borderColor: 'rgba(139, 92, 246, 0.3)',
-                            color: '#e2e8f0'
-                        }
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid rgba(139, 92, 246, 0.3)',
+                        borderRadius: '8px',
+                        padding: '4px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
                     }}
                 />
                 <MiniMap 

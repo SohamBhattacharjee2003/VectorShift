@@ -1,4 +1,5 @@
-import { Handle, Position } from "reactflow";
+import { Handle, Position, useReactFlow } from "reactflow";
+import { useCallback } from "react";
 
 /**
  * BaseNode - A flexible, reusable node abstraction component
@@ -9,8 +10,10 @@ import { Handle, Position } from "reactflow";
  * - Flexible styling through props
  * - Icon support for visual identification
  * - Consistent design patterns across all nodes
+ * - Delete button for removing nodes
  */
 export default function BaseNode({
+  id,
   title,
   icon,
   inputs = [],
@@ -18,14 +21,23 @@ export default function BaseNode({
   children,
   className = "",
   headerColor = "from-blue-500 to-indigo-600",
-  minWidth = "90px",
+  minWidth = "70px",
   minHeight = "auto",
+  style = {},
 }) {
+  const { deleteElements } = useReactFlow();
+
   // Calculate handle positions to distribute them evenly
   const getHandleStyle = (index, total) => {
     if (total === 1) return { top: "50%" };
     return { top: `${((index + 1) / (total + 1)) * 100}%` };
   };
+
+  // Handle node deletion
+  const handleDelete = useCallback((e) => {
+    e.stopPropagation();
+    deleteElements({ nodes: [{ id }] });
+  }, [id, deleteElements]);
 
   return (
     <div
@@ -41,7 +53,8 @@ export default function BaseNode({
         border: '1px solid rgba(139, 92, 246, 0.3)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        ...style
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-1px)';
@@ -78,13 +91,14 @@ export default function BaseNode({
                      headerColor.includes('pink') ? 'linear-gradient(135deg, #ec4899, #db2777)' :
                      'linear-gradient(135deg, #6366f1, #4f46e5)',
           color: 'white',
-          padding: '0.15rem 0.25rem',
+          padding: '0.1rem 0.2rem',
           borderTopLeftRadius: '4px',
           borderTopRightRadius: '4px',
           fontWeight: '600',
-          fontSize: '0.4375rem',
+          fontSize: '0.375rem',
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'space-between',
           gap: '0.1rem',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
           position: 'relative',
@@ -104,12 +118,46 @@ export default function BaseNode({
           pointerEvents: 'none'
         }}></div>
         
-        {icon && <span style={{ 
-          fontSize: '0.5rem',
-          position: 'relative',
-          zIndex: 1
-        }}>{icon}</span>}
-        <span style={{ position: 'relative', zIndex: 1 }}>{title}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.1rem', position: 'relative', zIndex: 1 }}>
+          {icon && <span style={{ fontSize: '0.4rem' }}>{icon}</span>}
+          <span>{title}</span>
+        </div>
+        
+        {/* Delete Button */}
+        <button
+          onClick={handleDelete}
+          className="node-delete-btn"
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            background: 'rgba(239, 68, 68, 0.9)',
+            border: '1px solid rgba(220, 38, 38, 0.8)',
+            borderRadius: '3px',
+            padding: '0.05rem 0.15rem',
+            cursor: 'pointer',
+            fontSize: '0.5rem',
+            lineHeight: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s',
+            color: 'white',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(220, 38, 38, 1)';
+            e.currentTarget.style.transform = 'scale(1.1)';
+            e.currentTarget.style.boxShadow = '0 0 8px rgba(239, 68, 68, 0.8)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.9)';
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.3)';
+          }}
+          title="Delete node"
+        >
+          ✕
+        </button>
       </div>
 
       {/* Input Handles */}
@@ -128,8 +176,8 @@ export default function BaseNode({
               id={handleId}
               style={{ 
                 ...style, 
-                width: '5px', 
-                height: '5px', 
+                width: '4px', 
+                height: '4px', 
                 backgroundColor: '#3b82f6', 
                 border: '1px solid rgba(15, 23, 42, 0.9)',
                 boxShadow: '0 0 3px rgba(59, 130, 246, 0.5)',
@@ -148,19 +196,21 @@ export default function BaseNode({
             {handleLabel && (
               <div
                 style={{ 
-                  left: "10px", 
+                  right: "100%", 
+                  marginRight: "4px",
                   ...style, 
                   transform: "translateY(-50%)", 
-                  fontSize: '0.5rem', 
-                  color: '#94a3b8', 
-                  backgroundColor: 'rgba(15, 23, 42, 0.9)', 
-                  padding: '0.05rem 0.15rem', 
+                  fontSize: '0.4rem', 
+                  color: '#e2e8f0', 
+                  backgroundColor: 'rgba(59, 130, 246, 0.85)', 
+                  padding: '0.05rem 0.2rem', 
                   borderRadius: '2px', 
                   position: 'absolute',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  border: '1px solid rgba(59, 130, 246, 0.5)',
                   fontWeight: '600',
                   letterSpacing: '0.025em',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
                 }}
               >
                 {handleLabel}
@@ -172,10 +222,10 @@ export default function BaseNode({
 
       {/* Node Body */}
       <div style={{ 
-        padding: '0.2rem',
+        padding: '0.15rem',
         background: 'rgba(10, 10, 15, 0.3)',
-        fontSize: '0.5rem',
-        lineHeight: '1.15'
+        fontSize: '0.45rem',
+        lineHeight: '1.1'
       }}>{children}</div>
 
       {/* Output Handles */}
@@ -194,8 +244,8 @@ export default function BaseNode({
               id={handleId}
               style={{ 
                 ...style, 
-                width: '5px', 
-                height: '5px', 
+                width: '4px', 
+                height: '4px', 
                 backgroundColor: '#10b981', 
                 border: '1px solid rgba(15, 23, 42, 0.9)',
                 boxShadow: '0 0 3px rgba(16, 185, 129, 0.5)',
@@ -214,19 +264,21 @@ export default function BaseNode({
             {handleLabel && (
               <div
                 style={{ 
-                  right: "10px", 
+                  left: "100%", 
+                  marginLeft: "4px",
                   ...style, 
                   transform: "translateY(-50%)", 
-                  fontSize: '0.5rem', 
-                  color: '#94a3b8', 
-                  backgroundColor: 'rgba(15, 23, 42, 0.9)', 
-                  padding: '0.05rem 0.15rem', 
+                  fontSize: '0.4rem', 
+                  color: '#e2e8f0', 
+                  backgroundColor: 'rgba(16, 185, 129, 0.85)', 
+                  padding: '0.05rem 0.2rem', 
                   borderRadius: '2px', 
                   position: 'absolute',
-                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  border: '1px solid rgba(16, 185, 129, 0.5)',
                   fontWeight: '600',
                   letterSpacing: '0.025em',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
                 }}
               >
                 {handleLabel}

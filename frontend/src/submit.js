@@ -79,10 +79,10 @@ export const SubmitButton = () => {
                             ? 'linear-gradient(135deg, #6b7280, #4b5563)'
                             : 'linear-gradient(135deg, #10b981, #059669)',
                         color: 'white',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '0.5rem',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '0.75rem',
                         fontWeight: '700',
-                        fontSize: '0.75rem',
+                        fontSize: '0.875rem',
                         boxShadow: isLoading 
                             ? '0 4px 12px rgba(0, 0, 0, 0.3)'
                             : '0 4px 12px rgba(16, 185, 129, 0.5)',
