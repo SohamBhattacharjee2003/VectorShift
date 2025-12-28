@@ -90,13 +90,13 @@ export const DraggableNode = ({ type, label, color = 'purple', dragKey }) => {
     const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
-      // If the node is dragged, set as active and keep it active
+      // Set isActive true if dragged, false if not
       const updateActive = () => {
-        if (draggedTypes.has(key)) {
-          setIsActive(true);
-        }
+        setIsActive(draggedTypes.has(key));
       };
       listeners.add(updateActive);
+      // Set initial state
+      setIsActive(draggedTypes.has(key));
       return () => {
         listeners.delete(updateActive);
       };

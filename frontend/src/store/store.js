@@ -56,13 +56,19 @@ export const useStore = create((set, get) => ({
     deleteNode: (nodeId) => {
       const nodeToDelete = get().nodes.find((node) => node.id === nodeId);
       const nodeType = nodeToDelete?.type;
-      
+      const nodeLabel = nodeToDelete?.data?.label || nodeToDelete?.data?.inputName || nodeToDelete?.data?.outputName || nodeToDelete?.id;
+      const dragKey = `${nodeType}:${nodeLabel}`;
+
       const updatedNodes = get().nodes.filter((node) => node.id !== nodeId);
-      
-      if (nodeType && !updatedNodes.some((node) => node.type === nodeType)) {
-        removeDraggedType(nodeType);
+
+      // Remove the dragKey for this node so palette color resets
+      if (nodeType && nodeLabel) {
+        removeDraggedType(dragKey);
+        // For static palette nodes (Input, Output), also remove the default palette key
+        if (nodeType === 'customInput') removeDraggedType('customInput:Input');
+        if (nodeType === 'customOutput') removeDraggedType('customOutput:Output');
       }
-      
+
       set({
         nodes: updatedNodes,
         edges: get().edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
