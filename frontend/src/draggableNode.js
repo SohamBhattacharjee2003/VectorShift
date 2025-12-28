@@ -84,13 +84,17 @@ export const hasDraggedType = (type) => {
 };
 
 export const DraggableNode = ({ type, label, color = 'purple', dragKey }) => {
+
     const scheme = colorSchemes[color] || colorSchemes.purple;
     const key = dragKey || `${type}:${label}`;
-    const [isActive, setIsActive] = useState(() => draggedTypes.has(key));
+    const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
+      // If the node is dragged, set as active and keep it active
       const updateActive = () => {
-        setIsActive(draggedTypes.has(key));
+        if (draggedTypes.has(key)) {
+          setIsActive(true);
+        }
       };
       listeners.add(updateActive);
       return () => {
@@ -108,11 +112,12 @@ export const DraggableNode = ({ type, label, color = 'purple', dragKey }) => {
       event.dataTransfer.effectAllowed = 'move';
     };
 
+    // Do not reset isActive on drag end; stays active until node is closed/removed
     const onDragEnd = (event) => {
       event.target.style.cursor = 'grab';
       event.target.style.transition = 'all 0.2s ease';
       event.target.style.transform = 'scale(1)';
-      removeDraggedType(key);
+      // Do not call removeDraggedType(key) or setIsActive(false)
     };
 
     const activeStyle = isActive ? {
