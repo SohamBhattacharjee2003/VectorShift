@@ -13,7 +13,10 @@ app = FastAPI(
 # Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to your Vercel domain for more security
+    allow_origins=[
+        "https://vectorshift.vercel.app",   # your frontend
+        "http://localhost:5173",            # local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
