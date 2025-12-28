@@ -14,7 +14,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://vector-shift-umber.vercel.app/",   # your frontend
+        "https://vector-shift-umber.vercel.app",   # your frontend
         "http://localhost:5173",            # local dev
     ],
     allow_credentials=True,
