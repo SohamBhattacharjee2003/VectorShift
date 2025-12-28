@@ -84,8 +84,8 @@ export const PipelineToolbar = () => {
                             I/O
                         </div>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <DraggableNode type='customInput' label='Input' color='green' />
-                            <DraggableNode type='customOutput' label='Output' color='green' />
+                            <DraggableNode type='customInput' label='Input' color='green' dragKey={'customInput:Input'} />
+                            <DraggableNode type='customOutput' label='Output' color='green' dragKey={'customOutput:Output'} />
                         </div>
                     </div>
                     
@@ -102,8 +102,8 @@ export const PipelineToolbar = () => {
                             Process
                         </div>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <DraggableNode type='text' label='Text' color='purple' />
-                            <DraggableNode type='llm' label='LLM' color='purple' />
+                            <DraggableNode type='text' label='Text' color='purple' dragKey={'text:Text'} />
+                            <DraggableNode type='llm' label='LLM' color='purple' dragKey={'llm:LLM'} />
                         </div>
                     </div>
                     
@@ -120,9 +120,9 @@ export const PipelineToolbar = () => {
                             Logic
                         </div>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <DraggableNode type='boolean' label='Bool' color='cyan' />
-                            <DraggableNode type='math' label='Math' color='cyan' />
-                            <DraggableNode type='filter' label='Filter' color='cyan' />
+                            <DraggableNode type='boolean' label='Bool' color='cyan' dragKey={'boolean:Bool'} />
+                            <DraggableNode type='math' label='Math' color='cyan' dragKey={'math:Math'} />
+                            <DraggableNode type='filter' label='Filter' color='cyan' dragKey={'filter:Filter'} />
                         </div>
                     </div>
                     
@@ -139,8 +139,8 @@ export const PipelineToolbar = () => {
                             Utility
                         </div>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <DraggableNode type='delay' label='Delay' color='amber' />
-                            <DraggableNode type='merge' label='Merge' color='amber' />
+                            <DraggableNode type='delay' label='Delay' color='amber' dragKey={'delay:Delay'} />
+                            <DraggableNode type='merge' label='Merge' color='amber' dragKey={'merge:Merge'} />
                         </div>
                     </div>
                 </div>

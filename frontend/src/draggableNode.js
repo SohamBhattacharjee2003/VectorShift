@@ -83,39 +83,38 @@ export const hasDraggedType = (type) => {
   return draggedTypes.has(type);
 };
 
-export const DraggableNode = ({ type, label, color = 'purple' }) => {
+export const DraggableNode = ({ type, label, color = 'purple', dragKey }) => {
     const scheme = colorSchemes[color] || colorSchemes.purple;
-    const [isActive, setIsActive] = useState(() => draggedTypes.has(type));
-    
+    const key = dragKey || `${type}:${label}`;
+    const [isActive, setIsActive] = useState(() => draggedTypes.has(key));
+
     useEffect(() => {
       const updateActive = () => {
-        setIsActive(draggedTypes.has(type));
+        setIsActive(draggedTypes.has(key));
       };
-      
       listeners.add(updateActive);
-      
       return () => {
         listeners.delete(updateActive);
       };
-    }, [type]);
-    
-    const onDragStart = (event, nodeType) => {
-      const appData = { nodeType }
-      addDraggedType(nodeType);
+    }, [key]);
+
+    const onDragStart = (event) => {
+      const appData = { nodeType: type, dragKey: key };
+      addDraggedType(key);
       setIsActive(true);
-      
       event.target.style.cursor = 'grabbing';
       event.target.style.transition = 'none';
       event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
       event.dataTransfer.effectAllowed = 'move';
     };
-    
+
     const onDragEnd = (event) => {
       event.target.style.cursor = 'grab';
       event.target.style.transition = 'all 0.2s ease';
       event.target.style.transform = 'scale(1)';
+      removeDraggedType(key);
     };
-    
+
     const activeStyle = isActive ? {
       background: 'linear-gradient(135deg, #ddd6fe, #c4b5fd)',
       color: '#7c3aed',
@@ -123,7 +122,7 @@ export const DraggableNode = ({ type, label, color = 'purple' }) => {
       boxShadow: '0 4px 12px rgba(196, 181, 253, 0.4)',
       fontWeight: '700'
     } : {};
-  
+
     return (
       <div
         className="futuristic-button"
@@ -141,7 +140,7 @@ export const DraggableNode = ({ type, label, color = 'purple' }) => {
           whiteSpace: 'nowrap',
           boxShadow: isActive ? activeStyle.boxShadow : 'none'
         }}
-        onDragStart={(event) => onDragStart(event, type)}
+        onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onMouseEnter={(e) => {
           if (!isActive) {

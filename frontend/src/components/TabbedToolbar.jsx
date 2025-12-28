@@ -35,8 +35,8 @@ const categories = {
     { type: 'text', label: 'API', color: 'yellow', icon: '🔌' },
     { type: 'text', label: 'WebSearch', color: 'yellow', icon: '🌐' },
     { type: 'text', label: 'File', color: 'yellow', icon: '📄' },
-    { type: 'delay', label: 'Time', color: 'yellow', icon: '🕐' },
     { type: 'database', label: 'Database', color: 'yellow', icon: '🗄️' },
+    { type: 'delay', label: 'Time', color: 'yellow', icon: '🕐' },
     { type: 'spreadsheet', label: 'Spreadsheet', color: 'yellow', icon: '📊' },
     { type: 'csv', label: 'CSV', color: 'yellow', icon: '🧾' },
     { type: 'json', label: 'JSON', color: 'yellow', icon: '🗂️' },
@@ -187,7 +187,7 @@ export const TabbedToolbar = () => {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-          gap: '12px',
+          gap: '20px',
           padding: '8px 0'
         }}>
           {filteredNodes.map((node, index) => (
@@ -197,13 +197,15 @@ export const TabbedToolbar = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '8px'
+                gap: node.gap ? '32px' : '8px',
+                marginTop: node.gap ? '16px' : 0
               }}
             >
               <DraggableNode
                 type={node.type}
                 label={node.label}
                 color={node.color}
+                dragKey={`${node.type}:${node.label}`}
               />
             </div>
           ))}
