@@ -52,10 +52,13 @@ const colorSchemes = {
   // No duplicate 'pink' key
 };
 
+
 const draggedTypes = new Set();
 const listeners = new Set();
+let globalVersion = 0;
 
 const notifyListeners = () => {
+  globalVersion++;
   listeners.forEach(listener => listener());
 };
 
@@ -78,85 +81,97 @@ export const hasDraggedType = (type) => {
   return draggedTypes.has(type);
 };
 
-export const DraggableNode = ({ type, label, color = 'purple', dragKey }) => {
 
-    const scheme = colorSchemes[color] || colorSchemes.purple;
-    const key = dragKey || `${type}:${label}`;
-    const [isActive, setIsActive] = useState(false);
+export const DraggableNode = ({ type, label, color = 'green', dragKey }) => {
+  const scheme = colorSchemes[color] || colorSchemes.purple;
+  const key = dragKey || `${type}:${label}`;
+  const [isActive, setIsActive] = useState(false);
+  const [, setVersion] = useState(globalVersion);
 
-    useEffect(() => {
-      // Set isActive true if dragged, false if not
-      const updateActive = () => {
-        setIsActive(draggedTypes.has(key));
-      };
-      listeners.add(updateActive);
-      // Set initial state
+  useEffect(() => {
+    // Set isActive true if dragged, false if not
+    const updateActive = () => {
       setIsActive(draggedTypes.has(key));
-      return () => {
-        listeners.delete(updateActive);
-      };
-    }, [key]);
-
-    const onDragStart = (event) => {
-      const appData = { nodeType: type, dragKey: key };
-      addDraggedType(key);
-      setIsActive(true);
-      event.target.style.cursor = 'grabbing';
-      event.target.style.transition = 'none';
-      event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
-      event.dataTransfer.effectAllowed = 'move';
+      setVersion(globalVersion);
     };
-
-    // Do not reset isActive on drag end; stays active until node is closed/removed
-    const onDragEnd = (event) => {
-      event.target.style.cursor = 'grab';
-      event.target.style.transition = 'all 0.2s ease';
-      event.target.style.transform = 'scale(1)';
-      // Do not call removeDraggedType(key) or setIsActive(false)
+    listeners.add(updateActive);
+    // Set initial state
+    setIsActive(draggedTypes.has(key));
+    setVersion(globalVersion);
+    return () => {
+      listeners.delete(updateActive);
     };
+  }, [key]);
 
-    const activeStyle = isActive ? {
-      background: 'linear-gradient(135deg, #ddd6fe, #c4b5fd)',
-      color: '#7c3aed',
-      border: '2px solid #c4b5fd',
-      boxShadow: '0 4px 12px rgba(196, 181, 253, 0.4)',
-      fontWeight: '700'
-    } : {};
+  // Remove from draggedTypes and reset isActive when unmounting (e.g., when closed)
+  useEffect(() => {
+    return () => {
+      removeDraggedType(key);
+      setIsActive(false);
+      setVersion(globalVersion);
+    };
+  }, [key]);
 
-    return (
-      <div
-        className="futuristic-button"
-        style={{ 
-          background: isActive ? activeStyle.background : scheme.background,
-          color: isActive ? activeStyle.color : scheme.color,
-          padding: '10px 20px',
-          borderRadius: '8px',
-          border: isActive ? activeStyle.border : `2px solid ${scheme.border}`,
-          cursor: 'grab',
-          userSelect: 'none',
-          transition: 'all 0.2s ease',
-          fontSize: '14px',
-          fontWeight: isActive ? activeStyle.fontWeight : '700',
-          whiteSpace: 'nowrap',
-          boxShadow: isActive ? activeStyle.boxShadow : 'none'
-        }}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-        onMouseEnter={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.background = scheme.hover;
-            e.currentTarget.style.transform = 'scale(1.05)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isActive) {
-            e.currentTarget.style.background = scheme.background;
-            e.currentTarget.style.transform = 'scale(1)';
-          }
-        }}
-        draggable
-      >
-        {label}
-      </div>
-    );
+  const onDragStart = (event) => {
+    const appData = { nodeType: type, dragKey: key };
+    addDraggedType(key);
+    setIsActive(true);
+    event.target.style.cursor = 'grabbing';
+    event.target.style.transition = 'none';
+    event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
+  // Do not reset isActive on drag end; stays active until node is closed/removed
+  const onDragEnd = (event) => {
+    event.target.style.cursor = 'grab';
+    event.target.style.transition = 'all 0.2s ease';
+    event.target.style.transform = 'scale(1)';
+    // Do not call removeDraggedType(key) or setIsActive(false)
+  };
+
+  const activeStyle = isActive ? {
+    background: 'linear-gradient(135deg, #ddd6fe, #c4b5fd)',
+    color: '#7c3aed',
+    border: '2px solid #c4b5fd',
+    boxShadow: '0 4px 12px rgba(196, 181, 253, 0.4)',
+    fontWeight: '700'
+  } : {};
+
+  return (
+    <div
+      className="futuristic-button"
+      style={{ 
+        background: isActive ? activeStyle.background : scheme.background,
+        color: isActive ? activeStyle.color : scheme.color,
+        padding: '10px 20px',
+        borderRadius: '8px',
+        border: isActive ? activeStyle.border : `2px solid ${scheme.border}`,
+        cursor: 'grab',
+        userSelect: 'none',
+        transition: 'all 0.2s ease',
+        fontSize: '14px',
+        fontWeight: isActive ? activeStyle.fontWeight : '700',
+        whiteSpace: 'nowrap',
+        boxShadow: isActive ? activeStyle.boxShadow : 'none'
+      }}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.background = scheme.hover;
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.background = scheme.background;
+          e.currentTarget.style.transform = 'scale(1)';
+        }
+      }}
+      draggable
+    >
+      {label}
+    </div>
+  );
 };

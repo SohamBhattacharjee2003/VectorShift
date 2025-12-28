@@ -64,9 +64,49 @@ export const useStore = create((set, get) => ({
       // Remove the dragKey for this node so palette color resets
       if (nodeType && nodeLabel) {
         removeDraggedType(dragKey);
-        // For static palette nodes (Input, Output), also remove the default palette key
-        if (nodeType === 'customInput') removeDraggedType('customInput:Input');
-        if (nodeType === 'customOutput') removeDraggedType('customOutput:Output');
+        // Always remove the palette key for this type/label
+        removeDraggedType(`${nodeType}:${nodeLabel}`);
+        // Remove all known palette keys for all node types
+        removeDraggedType('customInput:Input');
+        removeDraggedType('customOutput:Output');
+        removeDraggedType('text:Text');
+        removeDraggedType('llm:LLM');
+        removeDraggedType('boolean:Bool');
+        removeDraggedType('math:Math');
+        removeDraggedType('filter:Filter');
+        removeDraggedType('delay:Delay');
+        removeDraggedType('merge:Merge');
+        removeDraggedType('llm:OpenAI');
+        removeDraggedType('llm:Anthropic');
+        removeDraggedType('llm:Google');
+        removeDraggedType('llm:Cohere');
+        removeDraggedType('llm:Mistral');
+        removeDraggedType('llm:Llama');
+        removeDraggedType('llm:Gemini');
+        removeDraggedType('llm:Custom LLM');
+        removeDraggedType('boolean:Condition');
+        removeDraggedType('filter:Filter');
+        removeDraggedType('math:Math');
+        removeDraggedType('merge:Merge');
+        removeDraggedType('switch:Switch');
+        removeDraggedType('split:Split');
+        removeDraggedType('compare:Compare');
+        removeDraggedType('text:API');
+        removeDraggedType('text:WebSearch');
+        removeDraggedType('text:File');
+        removeDraggedType('database:Database');
+        removeDraggedType('delay:Time');
+        removeDraggedType('spreadsheet:Spreadsheet');
+        removeDraggedType('csv:CSV');
+        removeDraggedType('json:JSON');
+        removeDraggedType('text:Airtable');
+        removeDraggedType('text:Discord');
+        removeDraggedType('text:Dropbox');
+        removeDraggedType('text:AWS');
+        removeDraggedType('text:Slack');
+        removeDraggedType('text:Google Drive');
+        removeDraggedType('text:Notion');
+        removeDraggedType('text:Zapier');
       }
 
       set({

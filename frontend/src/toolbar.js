@@ -102,8 +102,8 @@ export const PipelineToolbar = () => {
                             Process
                         </div>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <DraggableNode type='text' label='Text' color='purple' dragKey={'text:Text'} />
-                            <DraggableNode type='llm' label='LLM' color='purple' dragKey={'llm:LLM'} />
+                            <DraggableNode type='text' label='Text' color='cyan' dragKey={'text:Text'} />
+                            <DraggableNode type='llm' label='LLM' color='cyan' dragKey={'llm:LLM'} />
                         </div>
                     </div>
                     
