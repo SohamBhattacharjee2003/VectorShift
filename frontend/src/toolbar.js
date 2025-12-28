@@ -1,130 +1,127 @@
 // toolbar.js
 
 import { DraggableNode } from './draggableNode';
+import { useStore } from './store/store';
 
 export const PipelineToolbar = () => {
+    const clearAll = useStore((state) => state.clearAll);
+    const nodes = useStore((state) => state.nodes);
+
     return (
         <div className="glass-effect" style={{ 
-            background: 'rgba(10, 10, 15, 0.6)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
             position: 'relative',
             zIndex: 10
         }}>
             <div style={{ 
-                padding: '0.75rem 1.25rem',
+                padding: '20px 32px',
                 maxWidth: '1920px',
                 margin: '0 auto'
             }}>
-                <h2 style={{ 
-                    fontSize: '0.75rem', 
-                    fontWeight: '700',
-                    color: '#e2e8f0',
-                    marginBottom: '0.625rem',
+                <div style={{ 
                     display: 'flex',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    gap: '0.5rem',
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase'
+                    marginBottom: '16px'
                 }}>
-                    <span style={{ 
-                        fontSize: '0.875rem',
-                        filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))'
-                    }}>🛠️</span>
-                    <span>Nodes</span>
-                    <div style={{
-                        flex: 1,
-                        height: '2px',
-                        background: 'linear-gradient(90deg, rgba(139, 92, 246, 0.5) 0%, transparent 100%)',
-                        borderRadius: '2px',
-                        marginLeft: '0.5rem'
-                    }}></div>
-                </h2>
+                    <h2 style={{ 
+                        fontSize: '13px', 
+                        fontWeight: '600',
+                        color: '#6b7280',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        letterSpacing: '0.05em',
+                        textTransform: 'uppercase'
+                    }}>
+                        <span>Nodes</span>
+                    </h2>
+                    
+                    {nodes.length > 0 && (
+                        <button
+                            onClick={clearAll}
+                            style={{
+                                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                padding: '6px 14px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.boxShadow = '0 4px 8px rgba(239, 68, 68, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.boxShadow = '0 2px 4px rgba(239, 68, 68, 0.3)';
+                            }}
+                        >
+                            🗑️ Clear All
+                        </button>
+                    )}
+                </div>
                 
                 <div style={{ 
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                    gap: '0.625rem',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '16px',
                     width: '100%'
                 }}>
                     {/* Input/Output Nodes */}
-                    <div className="futuristic-card" style={{
-                        background: 'rgba(16, 185, 129, 0.08)',
-                        border: '1px solid rgba(16, 185, 129, 0.2)',
-                        borderRadius: '6px',
-                        padding: '0.5rem'
-                    }}>
+                    <div className="futuristic-card">
                         <div style={{
-                            fontSize: '0.5625rem',
-                            fontWeight: '700',
-                            color: '#10b981',
-                            marginBottom: '0.4rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            marginBottom: '10px',
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            <span style={{ fontSize: '0.75rem' }}>📥</span>
-                            <span>I/O</span>
+                            I/O
                         </div>
-                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                             <DraggableNode type='customInput' label='Input' color='green' />
                             <DraggableNode type='customOutput' label='Output' color='green' />
                         </div>
                     </div>
                     
                     {/* Processing Nodes */}
-                    <div className="futuristic-card" style={{
-                        background: 'rgba(139, 92, 246, 0.08)',
-                        border: '1px solid rgba(139, 92, 246, 0.2)',
-                        borderRadius: '6px',
-                        padding: '0.5rem'
-                    }}>
+                    <div className="futuristic-card">
                         <div style={{
-                            fontSize: '0.5625rem',
-                            fontWeight: '700',
-                            color: '#a78bfa',
-                            marginBottom: '0.4rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            marginBottom: '10px',
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            <span style={{ fontSize: '0.75rem' }}>🔮</span>
-                            <span>Process</span>
+                            Process
                         </div>
-                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                             <DraggableNode type='text' label='Text' color='purple' />
                             <DraggableNode type='llm' label='LLM' color='purple' />
                         </div>
                     </div>
                     
                     {/* Logic Nodes */}
-                    <div className="futuristic-card" style={{
-                        background: 'rgba(6, 182, 212, 0.08)',
-                        border: '1px solid rgba(6, 182, 212, 0.2)',
-                        borderRadius: '6px',
-                        padding: '0.5rem'
-                    }}>
+                    <div className="futuristic-card">
                         <div style={{
-                            fontSize: '0.5625rem',
-                            fontWeight: '700',
-                            color: '#22d3ee',
-                            marginBottom: '0.4rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            marginBottom: '10px',
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            <span style={{ fontSize: '0.75rem' }}>🧮</span>
-                            <span>Logic</span>
+                            Logic
                         </div>
-                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                             <DraggableNode type='boolean' label='Bool' color='cyan' />
                             <DraggableNode type='math' label='Math' color='cyan' />
                             <DraggableNode type='filter' label='Filter' color='cyan' />
@@ -132,27 +129,18 @@ export const PipelineToolbar = () => {
                     </div>
                     
                     {/* Utility Nodes */}
-                    <div className="futuristic-card" style={{
-                        background: 'rgba(245, 158, 11, 0.08)',
-                        border: '1px solid rgba(245, 158, 11, 0.2)',
-                        borderRadius: '6px',
-                        padding: '0.5rem'
-                    }}>
+                    <div className="futuristic-card">
                         <div style={{
-                            fontSize: '0.5625rem',
-                            fontWeight: '700',
-                            color: '#fbbf24',
-                            marginBottom: '0.4rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            color: '#6b7280',
+                            marginBottom: '10px',
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em'
                         }}>
-                            <span style={{ fontSize: '0.75rem' }}>⚙️</span>
-                            <span>Utility</span>
+                            Utility
                         </div>
-                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                             <DraggableNode type='delay' label='Delay' color='amber' />
                             <DraggableNode type='merge' label='Merge' color='amber' />
                         </div>

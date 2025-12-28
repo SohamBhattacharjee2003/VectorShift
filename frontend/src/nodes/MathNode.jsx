@@ -1,48 +1,40 @@
 import { useState } from 'react';
 import BaseNode from './BaseNode';
 
-/**
- * MathNode - Performs mathematical operations
- * Demonstrates: Dropdown configuration with multiple inputs
- */
 export const MathNode = ({ id, data }) => {
   const [operation, setOperation] = useState(data?.operation || 'add');
 
   return (
     <BaseNode
       id={id}
-      title="Math Operation"
-      icon="🔢"
-      inputs={[
-        { id: `${id}-a`, label: 'a' },
-        { id: `${id}-b`, label: 'b' }
-      ]}
-      outputs={[{ id: `${id}-result`, label: 'result' }]}
-      headerColor="from-teal-500 to-green-600"
-      minWidth="100px"
+      title="Math"
+      icon="🧮"
+      inputs={[`${id}-a`, `${id}-b`]}
+      outputs={[`${id}-result`]}
     >
-      <div className="space-y-3">
-        <label className="flex flex-col">
-          <span className="text-xs font-medium text-gray-600 mb-1">Operation</span>
-          <select
-            className="node-select focus-ring-teal"
-            value={operation}
-            onChange={(e) => setOperation(e.target.value)}
-          >
-            <option value="add">+ Add</option>
-            <option value="subtract">− Subtract</option>
-            <option value="multiply">× Multiply</option>
-            <option value="divide">÷ Divide</option>
-            <option value="power">^ Power</option>
-            <option value="modulo">% Modulo</option>
-          </select>
-        </label>
-        <div className="text-xs text-gray-500 text-center">
-          Math operation
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        <div style={{ fontSize: "9px", color: "#6b7280", fontWeight: "500" }}>
+          Operation
         </div>
+        <select
+          style={{
+            border: "1px solid #d1d5db",
+            borderRadius: "6px",
+            padding: "6px 8px",
+            fontSize: "9px",
+            color: "#374151",
+            background: "white",
+            cursor: "pointer"
+          }}
+          value={operation}
+          onChange={(e) => setOperation(e.target.value)}
+        >
+          <option value="add">Add (+)</option>
+          <option value="subtract">Subtract (-)</option>
+          <option value="multiply">Multiply (×)</option>
+          <option value="divide">Divide (÷)</option>
+        </select>
       </div>
     </BaseNode>
   );
 };
-
-export default MathNode;

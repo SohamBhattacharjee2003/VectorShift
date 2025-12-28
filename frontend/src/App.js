@@ -42,11 +42,11 @@ function App() {
 
       {/* Header */}
       <header className="glass-effect" style={{ 
-        background: 'rgba(10, 10, 15, 0.7)',
+        background: '#ffffff',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(139, 92, 246, 0.2)',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)',
+        borderBottom: '1px solid #e5e7eb',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
         position: 'relative',
         zIndex: 10
       }}>
@@ -70,18 +70,19 @@ function App() {
                 animation: 'float 3s ease-in-out infinite'
               }}>⚡</div>
               <div>
-                <h1 className="gradient-text" style={{ 
+                <h1 style={{ 
                   fontSize: 'clamp(1.5rem, 4vw, 2rem)', 
                   fontWeight: '800',
                   lineHeight: '1.2',
                   letterSpacing: '-0.02em',
-                  marginBottom: '0.25rem'
+                  marginBottom: '0.25rem',
+                  color: '#1f2937'
                 }}>
                   VectorShift Pipeline Builder
                 </h1>
                 <p style={{ 
                   fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', 
-                  color: 'rgba(226, 232, 240, 0.7)',
+                  color: '#6b7280',
                   fontWeight: '500'
                 }}>
                   Design • Analyze • Deploy Data Pipelines

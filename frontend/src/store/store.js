@@ -7,6 +7,7 @@ import {
     applyEdgeChanges,
     MarkerType,
   } from 'reactflow';
+import { removeDraggedType, clearDraggedTypes } from '../draggableNode';
 
 export const useStore = create((set, get) => ({
     nodes: [],
@@ -49,6 +50,29 @@ export const useStore = create((set, get) => ({
   
           return node;
         }),
+      });
+    },
+    deleteNode: (nodeId) => {
+      const nodeToDelete = get().nodes.find((node) => node.id === nodeId);
+      const nodeType = nodeToDelete?.type;
+      
+      const updatedNodes = get().nodes.filter((node) => node.id !== nodeId);
+      
+      // Check if any nodes of this type remain
+      if (nodeType && !updatedNodes.some((node) => node.type === nodeType)) {
+        removeDraggedType(nodeType);
+      }
+      
+      set({
+        nodes: updatedNodes,
+        edges: get().edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
+      });
+    },
+    clearAll: () => {
+      clearDraggedTypes();
+      set({
+        nodes: [],
+        edges: [],
       });
     },
   }));

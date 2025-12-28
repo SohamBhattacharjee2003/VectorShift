@@ -1,37 +1,25 @@
+// textNode.js
+
 import { useState, useEffect, useRef } from 'react';
-import BaseNode from './BaseNode';
+import { Handle, Position } from 'reactflow';
 import { parseVariables } from '../utils/parseVariables';
 
 export const TextNode = ({ id, data }) => {
   const [currText, setCurrText] = useState(data?.text || '{{input}}');
   const [variables, setVariables] = useState([]);
-  const [dimensions, setDimensions] = useState({ width: 180, height: 'auto' });
   const textareaRef = useRef(null);
 
-  // Parse variables whenever text changes
   useEffect(() => {
-    const parsedVars = parseVariables(currText);
-    setVariables(parsedVars);
+    // Parse variables whenever text changes
+    const extractedVars = parseVariables(currText);
+    setVariables(extractedVars);
   }, [currText]);
 
-  // Auto-resize textarea and node based on content
   useEffect(() => {
+    // Auto-resize textarea based on content
     if (textareaRef.current) {
-      // Reset height to calculate new scrollHeight
       textareaRef.current.style.height = 'auto';
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = scrollHeight + 'px';
-      
-      // Calculate width based on content (with max and min constraints)
-      const scrollWidth = textareaRef.current.scrollWidth;
-      const minWidth = 180;
-      const maxWidth = 400;
-      const calculatedWidth = Math.min(maxWidth, Math.max(minWidth, scrollWidth + 30));
-      
-      setDimensions({
-        width: calculatedWidth,
-        height: 'auto'
-      });
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [currText]);
 
@@ -39,84 +27,75 @@ export const TextNode = ({ id, data }) => {
     setCurrText(e.target.value);
   };
 
-  // Create dynamic input handles for each variable
-  const dynamicInputs = variables.map((variable) => ({
-    id: `${id}-${variable}`,
-    label: variable,
-  }));
-
   return (
-    <BaseNode
-      id={id}
-      title="Text"
-      icon="📝"
-      inputs={dynamicInputs}
-      outputs={[{ id: `${id}-output`, label: 'output' }]}
-      headerColor="from-yellow-500 to-orange-600"
-      minWidth={`${dimensions.width}px`}
-      minHeight={dimensions.height}
-    >
-      <div style={{ width: '100%' }}>
-        <label style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ 
-            fontSize: '0.4rem', 
-            fontWeight: '600', 
-            color: '#6b7280', 
-            marginBottom: '0.1rem' 
-          }}>
-            Text Content
-          </span>
+    <div className="node">
+      <div className="node-header">
+        <span style={{ fontSize: "12px" }}>📝</span>
+        <span>Text</span>
+      </div>
+
+      {/* Dynamic input handles based on parsed variables */}
+      {variables.map((varName, index) => (
+        <Handle
+          key={varName}
+          type="target"
+          position={Position.Left}
+          id={`${id}-${varName}`}
+          style={{ 
+            top: `${50 + (index * 20)}px`,
+            background: '#6366f1'
+          }}
+        />
+      ))}
+
+      <div className="node-body">
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ fontSize: "12px", color: "#6b7280", fontWeight: "500" }}>
+            Text
+          </div>
           <textarea
             ref={textareaRef}
             style={{
-              width: '100%',
-              border: '1px solid #d1d5db',
-              borderRadius: '0.2rem',
-              padding: '0.2rem 0.3rem',
-              fontSize: '0.4rem',
-              outline: 'none',
-              resize: 'none',
-              overflow: 'hidden',
-              minHeight: '24px',
-              transition: 'all 0.2s',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              color: '#e2e8f0'
+              border: "1px solid #d1d5db",
+              borderRadius: "6px",
+              padding: "8px 10px",
+              fontSize: "13px",
+              color: "#374151",
+              background: "white",
+              resize: "none",
+              minHeight: "80px",
+              maxHeight: "400px",
+              overflow: "auto",
+              fontFamily: "monospace",
+              outline: "none",
+              width: "100%"
             }}
             value={currText}
             onChange={handleTextChange}
-            placeholder="Enter text with {{variables}}..."
-            rows={2}
+            onFocus={(e) => e.target.style.borderColor = "#d1d5db"}
+            onBlur={(e) => e.target.style.borderColor = "#d1d5db"}
           />
-        </label>
-        
-        {variables.length > 0 && (
-          <div style={{ 
-            fontSize: '0.375rem', 
-            color: '#94a3b8', 
-            marginTop: '0.2rem' 
-          }}>
-            <span style={{ fontWeight: '600' }}>Variables:</span>{' '}
-            {variables.map((v) => (
-              <span 
-                key={v} 
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(251, 191, 36, 0.2)',
-                  color: '#fbbf24',
-                  padding: '0.05rem 0.1rem',
-                  borderRadius: '0.1rem',
-                  marginRight: '0.1rem',
-                  border: '1px solid rgba(251, 191, 36, 0.3)',
-                  fontSize: '0.375rem'
-                }}
-              >
-                {v}
-              </span>
-            ))}
-          </div>
-        )}
+          {variables.length > 0 && (
+            <div style={{ 
+              fontSize: "10px", 
+              color: "#6366f1", 
+              marginTop: "4px",
+              padding: "4px 6px",
+              background: "#f5f3ff",
+              borderRadius: "4px"
+            }}>
+              Variables: {variables.join(', ')}
+            </div>
+          )}
+        </div>
       </div>
-    </BaseNode>
+
+      <Handle
+        type="source"
+        position={Position.Right}
+        id={`${id}-output`}
+        style={{ top: "50%", background: '#6366f1' }}
+      />
+    </div>
   );
 };

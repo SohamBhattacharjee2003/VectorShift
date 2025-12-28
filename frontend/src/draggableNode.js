@@ -1,95 +1,141 @@
 // draggableNode.js
 
+import { useState, useEffect } from 'react';
+
 const colorSchemes = {
   purple: {
-    gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-    glow: '0 4px 15px rgba(139, 92, 246, 0.4)',
-    hoverGlow: '0 6px 20px rgba(139, 92, 246, 0.6)'
+    background: '#f5f3ff',
+    border: '#e9d5ff',
+    color: '#7c3aed',
+    hover: '#ede9fe'
   },
   green: {
-    gradient: 'linear-gradient(135deg, #10b981, #059669)',
-    glow: '0 4px 15px rgba(16, 185, 129, 0.4)',
-    hoverGlow: '0 6px 20px rgba(16, 185, 129, 0.6)'
+    background: '#f0fdf4',
+    border: '#dcfce7',
+    color: '#16a34a',
+    hover: '#dcfce7'
   },
   cyan: {
-    gradient: 'linear-gradient(135deg, #06b6d4, #0891b2)',
-    glow: '0 4px 15px rgba(6, 182, 212, 0.4)',
-    hoverGlow: '0 6px 20px rgba(6, 182, 212, 0.6)'
+    background: '#ecfeff',
+    border: '#cffafe',
+    color: '#0891b2',
+    hover: '#cffafe'
   },
   amber: {
-    gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
-    glow: '0 4px 15px rgba(245, 158, 11, 0.4)',
-    hoverGlow: '0 6px 20px rgba(245, 158, 11, 0.6)'
+    background: '#fffbeb',
+    border: '#fef3c7',
+    color: '#d97706',
+    hover: '#fef3c7'
   },
   pink: {
-    gradient: 'linear-gradient(135deg, #ec4899, #db2777)',
-    glow: '0 4px 15px rgba(236, 72, 153, 0.4)',
-    hoverGlow: '0 6px 20px rgba(236, 72, 153, 0.6)'
+    background: '#fdf2f8',
+    border: '#fce7f3',
+    color: '#db2777',
+    hover: '#fce7f3'
   }
+};
+
+const draggedTypes = new Set();
+const listeners = new Set();
+
+const notifyListeners = () => {
+  listeners.forEach(listener => listener());
+};
+
+export const addDraggedType = (type) => {
+  draggedTypes.add(type);
+  notifyListeners();
+};
+
+export const removeDraggedType = (type) => {
+  draggedTypes.delete(type);
+  notifyListeners();
+};
+
+export const clearDraggedTypes = () => {
+  draggedTypes.clear();
+  notifyListeners();
+};
+
+export const hasDraggedType = (type) => {
+  return draggedTypes.has(type);
 };
 
 export const DraggableNode = ({ type, label, color = 'purple' }) => {
     const scheme = colorSchemes[color] || colorSchemes.purple;
+    const [isActive, setIsActive] = useState(() => draggedTypes.has(type));
+    
+    useEffect(() => {
+      const updateActive = () => {
+        setIsActive(draggedTypes.has(type));
+      };
+      
+      listeners.add(updateActive);
+      
+      return () => {
+        listeners.delete(updateActive);
+      };
+    }, [type]);
     
     const onDragStart = (event, nodeType) => {
       const appData = { nodeType }
+      addDraggedType(nodeType);
+      setIsActive(true);
+      
       event.target.style.cursor = 'grabbing';
-      event.target.style.transform = 'scale(0.95)';
+      event.target.style.transition = 'none';
       event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
       event.dataTransfer.effectAllowed = 'move';
     };
     
     const onDragEnd = (event) => {
       event.target.style.cursor = 'grab';
+      event.target.style.transition = 'all 0.2s ease';
       event.target.style.transform = 'scale(1)';
     };
+    
+    const activeStyle = isActive ? {
+      background: 'linear-gradient(135deg, #ddd6fe, #c4b5fd)',
+      color: '#7c3aed',
+      border: '2px solid #c4b5fd',
+      boxShadow: '0 4px 12px rgba(196, 181, 253, 0.4)',
+      fontWeight: '700'
+    } : {};
   
     return (
       <div
         className="futuristic-button"
         style={{ 
-          background: scheme.gradient,
-          color: 'white',
-          padding: '0.4rem 0.75rem',
-          borderRadius: '6px',
-          boxShadow: scheme.glow,
+          background: scheme.background,
+          color: scheme.color,
+          padding: '8px 16px',
+          borderRadius: '8px',
+          border: `1px solid ${scheme.border}`,
           cursor: 'grab',
           userSelect: 'none',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          fontSize: '0.75rem',
+          transition: 'all 0.2s ease',
+          fontSize: '13px',
           fontWeight: '600',
-          letterSpacing: '0.025em',
-          position: 'relative',
-          overflow: 'hidden',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          whiteSpace: 'nowrap'
+          whiteSpace: 'nowrap',
+          ...activeStyle
         }}
         onDragStart={(event) => onDragStart(event, type)}
         onDragEnd={onDragEnd}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-          e.currentTarget.style.boxShadow = scheme.hoverGlow;
+          if (!isActive) {
+            e.currentTarget.style.background = scheme.hover;
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = scheme.glow;
+          if (!isActive) {
+            e.currentTarget.style.background = scheme.background;
+            e.currentTarget.style.transform = 'scale(1)';
+          }
         }}
         draggable
       >
-        {/* Shimmer effect overlay */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: '-100%',
-          width: '100%',
-          height: '100%',
-          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-          pointerEvents: 'none'
-        }} className="shimmer-overlay"></div>
-        
-        <span style={{ position: 'relative', zIndex: 1 }}>{label}</span>
+        {label}
       </div>
     );
 };
