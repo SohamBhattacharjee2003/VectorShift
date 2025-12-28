@@ -27,7 +27,7 @@ export const SubmitButton = () => {
                 }))
             };
 
-            const response = await fetch('http://localhost:8000/pipelines/parse', {
+            const response = await fetch('https://vectorshift-1-qzct.onrender.com/pipelines/parse', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
