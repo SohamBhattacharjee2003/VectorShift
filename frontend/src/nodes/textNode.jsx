@@ -1,19 +1,22 @@
-// textNode.js
-
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import { parseVariables } from '../utils/parseVariables';
+import { useStore } from '../store/store';
 
 export const TextNode = ({ id, data }) => {
   const [currText, setCurrText] = useState(data?.text || '{{input}}');
   const [variables, setVariables] = useState([]);
   const textareaRef = useRef(null);
+  const updateNodeField = useStore((state) => state.updateNodeField);
+  const autoConnectNodes = useStore((state) => state.autoConnectNodes);
+  const deleteNode = useStore((state) => state.deleteNode);
 
   useEffect(() => {
-    // Parse variables whenever text changes
     const extractedVars = parseVariables(currText);
     setVariables(extractedVars);
-  }, [currText]);
+    updateNodeField(id, 'text', currText);
+    autoConnectNodes();
+  }, [currText, id, updateNodeField, autoConnectNodes]);
 
   useEffect(() => {
     // Auto-resize textarea based on content
@@ -32,6 +35,31 @@ export const TextNode = ({ id, data }) => {
       <div className="node-header">
         <span style={{ fontSize: "12px" }}>📝</span>
         <span>Text</span>
+        <button
+          onClick={() => deleteNode(id)}
+          style={{
+            marginLeft: "auto",
+            background: "transparent",
+            border: "none",
+            color: "#ef4444",
+            cursor: "pointer",
+            fontSize: "12px",
+            padding: "0 4px",
+            borderRadius: "3px",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = "#fee2e2";
+            e.target.style.transform = "scale(1.1)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "transparent";
+            e.target.style.transform = "scale(1)";
+          }}
+          title="Delete node"
+        >
+          ✕
+        </button>
       </div>
 
       {/* Dynamic input handles based on parsed variables */}

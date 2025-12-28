@@ -1,5 +1,3 @@
-// submit.js
-
 import { useState } from 'react';
 import { useStore } from './store/store';
 import { AlertModal } from './components/AlertModal';
@@ -16,7 +14,6 @@ export const SubmitButton = () => {
         setIsLoading(true);
 
         try {
-            // Prepare the pipeline data
             const pipelineData = {
                 nodes: nodes.map(node => ({
                     id: node.id,
@@ -30,7 +27,6 @@ export const SubmitButton = () => {
                 }))
             };
 
-            // Send to backend
             const response = await fetch('http://localhost:8000/pipelines/parse', {
                 method: 'POST',
                 headers: {
@@ -48,7 +44,6 @@ export const SubmitButton = () => {
             setIsModalOpen(true);
         } catch (err) {
             console.error('Error submitting pipeline:', err);
-            // Show error in modal format
             setAnalysisData({
                 num_nodes: 0,
                 num_edges: 0,

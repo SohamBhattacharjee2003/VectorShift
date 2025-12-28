@@ -1,5 +1,3 @@
-// draggableNode.js
-
 import { useState, useEffect } from 'react';
 
 const colorSchemes = {
@@ -9,11 +7,35 @@ const colorSchemes = {
     color: '#7c3aed',
     hover: '#ede9fe'
   },
+  blue: {
+    background: '#dbeafe',
+    border: '#3b82f6',
+    color: '#1e40af',
+    hover: '#bfdbfe'
+  },
   green: {
-    background: '#f0fdf4',
-    border: '#dcfce7',
-    color: '#16a34a',
-    hover: '#dcfce7'
+    background: '#d1fae5',
+    border: '#10b981',
+    color: '#047857',
+    hover: '#a7f3d0'
+  },
+  orange: {
+    background: '#fed7aa',
+    border: '#f97316',
+    color: '#c2410c',
+    hover: '#fdba74'
+  },
+  yellow: {
+    background: '#fef08a',
+    border: '#eab308',
+    color: '#a16207',
+    hover: '#fde047'
+  },
+  pink: {
+    background: '#fce7f3',
+    border: '#ec4899',
+    color: '#be185d',
+    hover: '#fbcfe8'
   },
   cyan: {
     background: '#ecfeff',
@@ -106,18 +128,18 @@ export const DraggableNode = ({ type, label, color = 'purple' }) => {
       <div
         className="futuristic-button"
         style={{ 
-          background: scheme.background,
-          color: scheme.color,
-          padding: '8px 16px',
+          background: isActive ? activeStyle.background : scheme.background,
+          color: isActive ? activeStyle.color : scheme.color,
+          padding: '10px 20px',
           borderRadius: '8px',
-          border: `1px solid ${scheme.border}`,
+          border: isActive ? activeStyle.border : `2px solid ${scheme.border}`,
           cursor: 'grab',
           userSelect: 'none',
           transition: 'all 0.2s ease',
-          fontSize: '13px',
-          fontWeight: '600',
+          fontSize: '14px',
+          fontWeight: isActive ? activeStyle.fontWeight : '700',
           whiteSpace: 'nowrap',
-          ...activeStyle
+          boxShadow: isActive ? activeStyle.boxShadow : 'none'
         }}
         onDragStart={(event) => onDragStart(event, type)}
         onDragEnd={onDragEnd}

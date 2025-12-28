@@ -1,4 +1,5 @@
 import { PipelineToolbar } from './toolbar';
+import { TabbedToolbar } from './components/TabbedToolbar';
 import { PipelineUI } from './ui';
 import { SubmitButton } from './submit';
 
@@ -120,10 +121,8 @@ function App() {
         </div>
       </header>
 
-      {/* Toolbar */}
-      <PipelineToolbar />
+      <TabbedToolbar />
 
-      {/* Main Canvas Area */}
       <main style={{ 
         flex: 1, 
         overflow: 'hidden',

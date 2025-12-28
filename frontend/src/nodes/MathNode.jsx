@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import BaseNode from './BaseNode';
+import StaggeredDropDown from '../components/StaggeredDropDown';
 
 export const MathNode = ({ id, data }) => {
   const [operation, setOperation] = useState(data?.operation || 'add');
@@ -16,24 +17,16 @@ export const MathNode = ({ id, data }) => {
         <div style={{ fontSize: "9px", color: "#6b7280", fontWeight: "500" }}>
           Operation
         </div>
-        <select
-          style={{
-            border: "1px solid #d1d5db",
-            borderRadius: "6px",
-            padding: "6px 8px",
-            fontSize: "9px",
-            color: "#374151",
-            background: "white",
-            cursor: "pointer"
-          }}
+        <StaggeredDropDown
           value={operation}
-          onChange={(e) => setOperation(e.target.value)}
-        >
-          <option value="add">Add (+)</option>
-          <option value="subtract">Subtract (-)</option>
-          <option value="multiply">Multiply (×)</option>
-          <option value="divide">Divide (÷)</option>
-        </select>
+          onChange={(value) => setOperation(value)}
+          options={[
+            "add",
+            "subtract",
+            "multiply",
+            "divide"
+          ]}
+        />
       </div>
     </BaseNode>
   );

@@ -1,5 +1,3 @@
-// store.js
-
 import { create } from "zustand";
 import {
     addEdge,
@@ -8,6 +6,7 @@ import {
     MarkerType,
   } from 'reactflow';
 import { removeDraggedType, clearDraggedTypes } from '../draggableNode';
+import { parseVariables } from '../utils/parseVariables';
 
 export const useStore = create((set, get) => ({
     nodes: [],
@@ -25,11 +24,13 @@ export const useStore = create((set, get) => ({
         set({
             nodes: [...get().nodes, node]
         });
+        get().autoConnectNodes();
     },
     onNodesChange: (changes) => {
       set({
         nodes: applyNodeChanges(changes, get().nodes),
       });
+      get().autoConnectNodes();
     },
     onEdgesChange: (changes) => {
       set({
@@ -58,7 +59,6 @@ export const useStore = create((set, get) => ({
       
       const updatedNodes = get().nodes.filter((node) => node.id !== nodeId);
       
-      // Check if any nodes of this type remain
       if (nodeType && !updatedNodes.some((node) => node.type === nodeType)) {
         removeDraggedType(nodeType);
       }
@@ -74,5 +74,63 @@ export const useStore = create((set, get) => ({
         nodes: [],
         edges: [],
       });
+    },
+    autoConnectNodes: () => {
+      const nodes = get().nodes;
+      const edges = get().edges;
+      const newEdges = [];
+
+      nodes.forEach(node => {
+        if (node.type === 'text' && node.data?.text) {
+          const variables = parseVariables(node.data.text);
+          
+          variables.forEach(varName => {
+            const matchingNode = nodes.find(n => {
+              if (n.type === 'customInput') {
+                const inputName = n.data?.inputName || n.id.replace('customInput-', 'input_');
+                return inputName === varName;
+              }
+              if (n.type === 'customOutput') {
+                const outputName = n.data?.outputName || n.id.replace('customOutput-', 'output_');
+                return outputName === varName;
+              }
+              return false;
+            });
+
+            if (matchingNode) {
+              const sourceHandle = matchingNode.type === 'customInput' 
+                ? `${matchingNode.id}-value` 
+                : `${matchingNode.id}-value`;
+              const targetHandle = `${node.id}-${varName}`;
+              
+              const edgeExists = edges.some(e => 
+                e.source === matchingNode.id && 
+                e.target === node.id && 
+                e.sourceHandle === sourceHandle &&
+                e.targetHandle === targetHandle
+              );
+
+              if (!edgeExists) {
+                newEdges.push({
+                  id: `${matchingNode.id}-${node.id}-${varName}`,
+                  source: matchingNode.id,
+                  target: node.id,
+                  sourceHandle: sourceHandle,
+                  targetHandle: targetHandle,
+                  type: 'smoothstep',
+                  animated: true,
+                  markerEnd: { type: MarkerType.Arrow, height: '20px', width: '20px' }
+                });
+              }
+            }
+          });
+        }
+      });
+
+      if (newEdges.length > 0) {
+        set({
+          edges: [...edges, ...newEdges]
+        });
+      }
     },
   }));

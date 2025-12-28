@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseNode from "./BaseNode";
+import StaggeredDropDown from "../components/StaggeredDropDown";
+import { useStore } from '../store/store';
 
 export default function InputNode({ id, data }) {
   const [currName, setCurrName] = useState(
@@ -8,6 +10,14 @@ export default function InputNode({ id, data }) {
   const [inputType, setInputType] = useState(
     data?.inputType || "Text"
   );
+  
+  const updateNodeField = useStore((state) => state.updateNodeField);
+  const autoConnectNodes = useStore((state) => state.autoConnectNodes);
+
+  useEffect(() => {
+    updateNodeField(id, 'inputName', currName);
+    autoConnectNodes();
+  }, [currName, id, updateNodeField, autoConnectNodes]);
 
   return (
     <BaseNode
@@ -64,51 +74,28 @@ export default function InputNode({ id, data }) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: "5px", color: "#374151", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
+          <div style={{ fontSize: "8px", color: "#374151", fontWeight: "600", display: "flex", alignItems: "center", gap: "2px" }}>
             Type 
-            <span style={{ color: "#9ca3af", fontSize: "5px" }}>ⓘ</span>
+            <span style={{ color: "#9ca3af", fontSize: "7px" }}>ⓘ</span>
           </div>
-          <div style={{ fontSize: "5px", color: "#6366f1", fontWeight: "500" }}>
+          <div style={{ fontSize: "8px", color: "#6366f1", fontWeight: "500" }}>
             Dropdown
           </div>
         </div>
-        <select
-          style={{
-            border: "1px solid #e5e7eb",
-            borderRadius: "8px",
-            padding: "9px 12px",
-            fontSize: "9px",
-            color: "#1f2937",
-            background: "white",
-            cursor: "pointer",
-            width: "100%",
-            outline: "none",
-            appearance: "none",
-            backgroundImage: "url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%235b21b6%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 10px center",
-            backgroundSize: "9px",
-            paddingRight: "28px",
-            fontWeight: "400"
-          }}
+        <StaggeredDropDown
           value={inputType}
-          onChange={(e) => setInputType(e.target.value)}
-          onFocus={(e) => {
-            e.target.style.borderColor = "#d1d5db";
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "#e5e7eb";
-          }}
-        >
-          <option value="Text">Text</option>
-          <option value="File">File</option>
-          <option value="List of files">List of files</option>
-          <option value="List of lists of files">List of lists of files</option>
-          <option value="Audio">Audio</option>
-          <option value="Image">Image</option>
-          <option value="Knowledge Base">Knowledge Base</option>
-          <option value="Agent">Agent</option>
-        </select>
+          onChange={(value) => setInputType(value)}
+          options={[
+            "Text",
+            "File",
+            "List of files",
+            "List of lists of files",
+            "Audio",
+            "Image",
+            "Knowledge Base",
+            "Agent"
+          ]}
+        />
       </div>
     </BaseNode>
   );

@@ -1,7 +1,3 @@
-// ui.js
-// Displays the drag-and-drop UI
-// --------------------------------------------------
-
 import { useState, useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
 import { useStore } from './store/store';
@@ -68,7 +64,6 @@ export const PipelineUI = () => {
             const appData = JSON.parse(event.dataTransfer.getData('application/reactflow'));
             const type = appData?.nodeType;
       
-            // check if the dropped element is valid
             if (typeof type === 'undefined' || !type) {
               return;
             }

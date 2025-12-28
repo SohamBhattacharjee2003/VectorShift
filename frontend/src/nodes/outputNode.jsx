@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import BaseNode from './BaseNode';
+import StaggeredDropDown from '../components/StaggeredDropDown';
 
 export const OutputNode = ({ id, data }) => {
   const [currName, setCurrName] = useState(data?.outputName || id.replace('customOutput-', 'output_'));
@@ -38,22 +39,14 @@ export const OutputNode = ({ id, data }) => {
           <div style={{ fontSize: "9px", color: "#6b7280", fontWeight: "500" }}>
             Type
           </div>
-          <select
-            style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "6px",
-              padding: "6px 8px",
-              fontSize: "9px",
-              color: "#374151",
-              background: "white",
-              cursor: "pointer"
-            }}
+          <StaggeredDropDown
             value={outputType}
-            onChange={(e) => setOutputType(e.target.value)}
-          >
-            <option value="Text">Text</option>
-            <option value="Image">Image</option>
-          </select>
+            onChange={(value) => setOutputType(value)}
+            options={[
+              "Text",
+              "Image"
+            ]}
+          />
         </label>
       </div>
     </BaseNode>
