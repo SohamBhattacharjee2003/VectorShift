@@ -49,12 +49,7 @@ const colorSchemes = {
     color: '#d97706',
     hover: '#fef3c7'
   },
-  pink: {
-    background: '#fdf2f8',
-    border: '#fce7f3',
-    color: '#db2777',
-    hover: '#fce7f3'
-  }
+  // No duplicate 'pink' key
 };
 
 const draggedTypes = new Set();
